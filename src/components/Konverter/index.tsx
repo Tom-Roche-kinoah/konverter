@@ -6,26 +6,65 @@ import './konverter.css';
 
 function Konverter() {
   const [currenciesPannelIsOpen, setCurrenciesPannelIsOpen] = useState(false);
-  const [keyboardIsOpen, setKeyboardIsOpen] = useState(true);
+  const [keyboardIsOpen, setKeyboardIsOpen] = useState(false);
+  const [inputValue1, setInputValue1] = useState('1.00');
+  const [newInput, setNewInput] = useState(false);
 
+  const handleOpenKeyboard = () => {
+    setKeyboardIsOpen(true);
+    setNewInput(true);
+    setCurrenciesPannelIsOpen(false);
+  }
+
+  const handleOpenCurrenciesPannel = () => {
+    setCurrenciesPannelIsOpen(!currenciesPannelIsOpen);
+    setKeyboardIsOpen(false);
+  }
+
+  const handleKeyValue = (value: number|'c'|'.') => {
+    // if 'c' => set value to 0 then exit
+    if (value === 'c') {
+      setInputValue1('0');
+      return;
+    }
+    // if ',' => check if its not already in string
+    if (value === '.' && inputValue1.includes('.')) {
+      return;
+    }
+    // if 0 => replace it
+    if (inputValue1 === '0') {
+      setInputValue1('' + value);
+      return;
+    }
+    // if new opening => replace current value
+    if (newInput) {
+      setInputValue1('' + value);
+      setNewInput(false);
+      return;
+    }
+    // if string < 11 characters => concat
+    if (inputValue1.length <= 11 ) {
+      setInputValue1((inputValue1 + value));
+    }
+  };
 
   return (
     <div className="konverter">
 
       <div className="container">
-        <div className="currency currency-1">
-          <div className="currency-value">1.00</div>
+        <div className="currency currency-1" onClick={() => handleOpenKeyboard()}>
+          <div className="currency-value">{inputValue1}</div>
           <div className="currency-name">Euro</div>
         </div>
         <div className="currency currency-2">
-          <div className="currency-value">1.09</div>
+          <div className="currency-value">{(Number(inputValue1) * 1.09).toFixed(2)}</div>
           <div className="currency-name">United States Dollar</div>
         </div>
       </div>
 
       <button
         className={currenciesPannelIsOpen ? "currency-selector-btn open" : "currency-selector-btn"}
-        onClick={() => setCurrenciesPannelIsOpen(!currenciesPannelIsOpen)}
+        onClick={() => handleOpenCurrenciesPannel()}
       >
         <img src={iconMenu} alt="Menu Icon" />
       </button>
@@ -76,19 +115,19 @@ function Konverter() {
       </div>
 
       <div className={keyboardIsOpen ? "keyboard open" : "keyboard"}>
-        <button className="key number-key">7</button>
-        <button className="key number-key">8</button>
-        <button className="key number-key">9</button>
-        <button className="key number-key">4</button>
-        <button className="key number-key">5</button>
-        <button className="key number-key">6</button>
-        <button className="key number-key">1</button>
-        <button className="key number-key">2</button>
-        <button className="key number-key">3</button>
-        <button className="key number-key zero">0</button>
-        <button className="key number-key comma">,</button>
-        <button className="key action-key correction">c</button>
-        <button className="key action-key return"><img src={iconReturn} alt="Menu Icon" /></button>
+        <button className="key number-key" onClick={() => handleKeyValue(7)}>7</button>
+        <button className="key number-key" onClick={() => handleKeyValue(8)}>8</button>
+        <button className="key number-key" onClick={() => handleKeyValue(9)}>9</button>
+        <button className="key number-key" onClick={() => handleKeyValue(4)}>4</button>
+        <button className="key number-key" onClick={() => handleKeyValue(5)}>5</button>
+        <button className="key number-key" onClick={() => handleKeyValue(6)}>6</button>
+        <button className="key number-key" onClick={() => handleKeyValue(1)}>1</button>
+        <button className="key number-key" onClick={() => handleKeyValue(2)}>2</button>
+        <button className="key number-key" onClick={() => handleKeyValue(3)}>3</button>
+        <button className="key number-key zero" onClick={() => handleKeyValue(0)}>0</button>
+        <button className="key number-key comma" onClick={() => handleKeyValue('.')}>,</button>
+        <button className="key action-key correction" onClick={() => handleKeyValue('c')}>c</button>
+        <button className="key action-key return" onClick={() => setKeyboardIsOpen(false)}><img src={iconReturn} alt="Menu Icon" /></button>
       </div>
 
     </div>

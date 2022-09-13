@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import iconMenu from '../../assets/img/icon-menu.svg';
+import iconReturn from '../../assets/img/icon-return.svg';
 import './konverter.css';
 
 
 function Konverter() {
   const [currenciesPannelIsOpen, setCurrenciesPannelIsOpen] = useState(false);
-  const [keyboardIsOpen, setKeyboardIsOpen] = useState(false);
+  const [keyboardIsOpen, setKeyboardIsOpen] = useState(true);
 
 
   return (
@@ -72,6 +73,22 @@ function Konverter() {
             <li className="currency-item">United States Dollar</li>
           </ul>
         </div>
+      </div>
+
+      <div className={keyboardIsOpen ? "keyboard open" : "keyboard"}>
+        <button className="key number-key">7</button>
+        <button className="key number-key">8</button>
+        <button className="key number-key">9</button>
+        <button className="key number-key">4</button>
+        <button className="key number-key">5</button>
+        <button className="key number-key">6</button>
+        <button className="key number-key">1</button>
+        <button className="key number-key">2</button>
+        <button className="key number-key">3</button>
+        <button className="key number-key zero">0</button>
+        <button className="key number-key comma">,</button>
+        <button className="key action-key correction">c</button>
+        <button className="key action-key return"><img src={iconReturn} alt="Menu Icon" /></button>
       </div>
 
     </div>

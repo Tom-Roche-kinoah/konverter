@@ -1,6 +1,7 @@
 :root{
   --color-light: #FFF;
   --color-medium: #545454;
+  --color-medium2: #929292;
   --color-dark: #313131;
   --color-main: #99CC00;
   --radius-base: 10px;
@@ -39,6 +40,7 @@ body {
   max-width: 600px;
   background: linear-gradient(var(--color-medium) 0%, #111 100%);
   padding: 1rem;
+  overflow: hidden;
 }
 
 /* CURRENCY DISPLAY */
@@ -193,4 +195,52 @@ body {
 .currency-search-input input::placeholder {
   color: inherit;
   opacity: .5;
+}
+
+/* KEYBOARD */
+.keyboard {
+  background-color: var(--color-medium);
+  padding: .5rem;
+  border-radius: var(--radius-base);
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  z-index: 200;
+  transition: bottom .3s ease-in-out;
+}
+.keyboard.open {
+  bottom: -20rem;
+}
+.keyboard .key {
+  background-color: var(--color-dark);
+  width: calc((100% - 1rem) / 3);
+  padding: .5rem;
+  padding-left: 2rem;
+  border-radius: calc(var(--radius-base) * .5);
+  font-size: 1.5rem;
+  transition: .5s ease-in-out;
+  text-align: left;
+}
+.keyboard .key:active {
+  transition: 0s ease-in-out;
+  background-color: var(--color-main);
+}
+.keyboard .number-key {
+
+}
+.keyboard .number-key.zero {
+  width: calc((100% - 1rem) / 3 * 2 + .5rem);
+}
+.keyboard .action-key.return {
+  margin-left: auto;
+}
+.keyboard .action-key {
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  background-color: var(--color-medium2);
+  color: var(--color-dark);
 }

@@ -1,0 +1,196 @@
+:root{
+  --color-light: #FFF;
+  --color-medium: #545454;
+  --color-dark: #313131;
+  --color-main: #99CC00;
+  --radius-base: 10px;
+  --fw-thin: 100;
+  --fw-regular: 400;
+  --fw-bold: 700;
+  --fw-black: 900;
+  --currency-selector-height: 18rem;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  background-color: #111;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: var(--fw-regular);
+  font-size: 17px;
+  user-select: none;
+}
+
+.konverter{
+  position: relative;
+  color: var(--color-light);
+  height: 100%;
+  margin: 0 auto;
+  max-width: 600px;
+  background: linear-gradient(var(--color-medium) 0%, #111 100%);
+  padding: 1rem;
+}
+
+/* CURRENCY DISPLAY */
+.container {
+  border-radius: var(--radius-base);
+  outline: solid 5px rgba(255,255,255,.2);
+  box-shadow: 0 1rem 1rem rgba(0,0,0,.1);
+  position: relative;
+  z-index: 50;
+}
+.currency {
+  padding: 2rem 0;
+  text-align: center;
+}
+@media screen and (max-height: 580px) {
+  .currency {
+    padding: 1rem 0;
+    text-align: center;
+  }
+}
+.currency-1 {
+  position: relative;
+  background-color: var(--color-dark);
+  border-radius: var(--radius-base) var(--radius-base) 0 0;
+}
+.currency-1::after {
+  display: block;
+  content: "";
+  width: 1rem;
+  height: 1rem;
+  --triangle-size: 1rem;
+  border-top: solid var(--triangle-size) var(--color-dark);
+  border-right: solid var(--triangle-size) transparent;
+  border-left: solid var(--triangle-size) transparent;
+  position: absolute;
+  left: calc(50% - var(--triangle-size));
+  bottom: calc(var(--triangle-size) * -.9);
+}
+.currency-2 {
+  background-color: var(--color-medium);
+  border-radius: 0 0 var(--radius-base) var(--radius-base);
+}
+.currency-value {
+  font-size: 2rem;
+  font-weight: var(--fw-bold);
+  margin-bottom: .2rem;
+  text-shadow: 
+    0 -1px 0px rgba(0,0,0,.5),
+    0 1px 0px rgba(255,255,255,.5);
+}
+.currency-name {
+  font-size: .8rem;
+  font-weight: var(--fw-regular);
+}
+.currency-2 .currency-value  {
+  color: var(--color-main);
+}
+
+
+/* CURRENCY SELECTOR */
+.currency-selector-btn {
+  --btn-size: 2.5rem;
+  position: absolute;
+  z-index: 100;
+  left: calc(50% - calc(var(--btn-size) * .5));
+  top: 15.7rem;
+  background-color: var(--color-main);
+  width: var(--btn-size);
+  height: var(--btn-size);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10rem;
+  transition: top .3s .3s ease-in-out, transform .3s ease;
+}
+.currency-selector-btn.open {
+  transform: rotate(90deg);
+  top: calc(15.7rem + var(--currency-selector-height));
+}
+.currency-selector {
+  color: var(--color-dark);
+  font-weight: var(--fw-bold);
+  background-color: var(--color-main);
+  margin: 0 .5rem;
+  padding-top: .5rem;
+  padding-bottom: 1rem;
+  position: relative;
+  z-index: 10;
+  top: 0rem;
+  border-radius: 0 0 var(--radius-base) var(--radius-base);
+  overflow: hidden;
+  box-shadow: 0 0 1rem rgba(0,0,0,.2);
+}
+.currency-scroll-zone {
+  transition: height .3s .3s ease-in-out;
+  height: 0;
+  overflow-y: auto;
+}
+.currency-scroll-zone::-webkit-scrollbar {
+	width: .5rem;
+	background-color: transparent;
+}
+.currency-scroll-zone::-webkit-scrollbar-track {
+	border-radius: 1rem;
+	background-color: transparent;
+}
+.currency-scroll-zone::-webkit-scrollbar-thumb {
+	border-radius: 1rem;
+	background-color: transparent;
+}
+.currency-scroll-zone:hover::-webkit-scrollbar-thumb {
+	background-color: var(--color-light);
+}
+.currency-selector.open .currency-scroll-zone {
+  height: var(--currency-selector-height);
+}
+.currency-list {
+  padding: 0 1rem;
+  list-style: none;
+}
+.currency-item {
+  cursor: pointer;
+  padding: 1rem;
+  border-bottom: solid 2px var(--color-dark);
+}
+.currency-item:first-child {
+  border-top: solid 2px var(--color-dark);
+}
+.currency-item:hover {
+  background-color: rgba(0,0,0,.1);
+}
+.currency-search-input {
+  padding: 1rem;
+  padding-top: .5rem;
+  background-color: var(--color-main);
+  position: sticky;
+  top: 0;
+  z-index: 10;  
+}
+.currency-search-input input {
+  background-image: url(../../assets/img/icon-search.svg);
+  background-position: left 1rem center;
+  width: 100%;
+  color: var(--color-light);
+  font-size: .9rem;
+  font-weight: var(--fw-regular);
+  background-color: rgba(0,0,0,.3);
+  padding: 1rem;
+  padding-left: 3rem;
+  border-radius: calc(var(--radius-base) * .5);
+}
+.currency-search-input input::placeholder {
+  color: inherit;
+  opacity: .5;
+}

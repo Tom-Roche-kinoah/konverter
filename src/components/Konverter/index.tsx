@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import iconMenu from '../../assets/img/icon-menu.svg';
 import iconReturn from '../../assets/img/icon-return.svg';
 import './konverter.css';
-import currencies from '../../data/currencies';
+
+import Currency from '../Currency';
 
 const axios = require('axios').default;
 
@@ -22,16 +23,15 @@ function Konverter() {
   const [currency, setCurrency] = useState('United States Dollar');
 
   const handleCurrenciesSearchInputChange = (e: any) => {
-    setCurrenciesSearchInput(e.target.value)
-  }
+    setCurrenciesSearchInput(e.target.value);
+  };
 
   const filterSymbols = () => (
     symbols.filter((symbol: any) => (
-        symbol.description.toLowerCase().includes(currenciesSearchInput.toLowerCase()) ||
-        symbol.code.toLowerCase().includes(currenciesSearchInput.toLowerCase())
+      symbol.description.toLowerCase().includes(currenciesSearchInput.toLowerCase())
+        || symbol.code.toLowerCase().includes(currenciesSearchInput.toLowerCase())
     ))
   );
-  
 
   const handleOpenKeyboard = () => {
     setKeyboardIsOpen(true);
@@ -52,33 +52,32 @@ function Konverter() {
   // API Fetch
   const fetchData = () => {
     setIsLoading(true);
-    let symbols: string = 'https://api.exchangerate.host/symbols/';
-    let rates: string = 'https://api.exchangerate.host/latest';
+    const symbols: string = 'https://api.exchangerate.host/symbols/';
+    const rates: string = 'https://api.exchangerate.host/latest';
     const requestsymbols = axios.get(symbols);
     const requestrates = axios.get(rates);
 
     axios.all([requestsymbols, requestrates]).then(axios.spread((...responses: any[]) => {
-      const responseSymbols = responses[0];   
-      const responseRates = responses[1];   
+      const responseSymbols = responses[0];
+      const responseRates = responses[1];
       setSymbols(Object.values(responseSymbols.data.symbols));
-      setRates(responseRates.data.rates);   
+      setRates(responseRates.data.rates);
     }))
-    .catch((error: any) => {
-      throw new Error(error.message);
-    })
-    .finally(() => {
-      setIsLoading(false);
-    });
+      .catch((error: any) => {
+        throw new Error(error.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
     fetchData();
-  },[]);
-
+  }, []);
 
   /**
    * Keyboard logic
-   * @param {number|'c'|'.'} value - a digit (0 to 9), a 'c' (clean input), ',' (coma), Enter & Backspace.
+   * @param {number|'c'|'.'} value - a digit (0 to 9), a 'c' (clean input), coma, Enter & Backspace.
    */
   const handleKeyValue = (value: number|'c'|'.'|'Enter'|'Backspace') => {
     // if 'Enter' => Close keyboard
@@ -99,7 +98,7 @@ function Konverter() {
     }
     // if new opening => replace current value
     if (newInput) {
-      setInputValue1('' + value);
+      setInputValue1(`${value}`);
       setNewInput(false);
       return;
     }
@@ -109,25 +108,25 @@ function Konverter() {
     }
     // if ',' => check if there are digital before (the fisrt char shouldnt be ,)
     if (value === '.' && inputValue1.charAt(0) === '0') {
-      setInputValue1('0' + value)
+      setInputValue1(`0${value}`);
       return;
     }
     // if 0 => replace it
     if (inputValue1 === '0') {
-      setInputValue1('' + value);
+      setInputValue1(`${value}`);
       return;
     }
     // if string < 11 characters => concat
-    if (inputValue1.length <= 11 ) {
+    if (inputValue1.length <= 11) {
       setInputValue1((inputValue1 + value));
     }
   };
 
   useEffect(() => {
     function handleGetKey(e: any) {
-      let key: any = e.key;
+      const { key } = e;
       if (keyboardIsOpen) {
-        if ( ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'c', '.', 'Enter', 'Backspace'].includes(key)) {
+        if (['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'c', '.', 'Enter', 'Backspace'].includes(key)) {
           handleKeyValue(key);
           console.log(key);
         }
@@ -136,7 +135,7 @@ function Konverter() {
     document.addEventListener('keydown', handleGetKey);
     return function cleanup() {
       document.removeEventListener('keydown', handleGetKey);
-    }
+    };
   });
 
   return (
@@ -154,13 +153,13 @@ function Konverter() {
       </div>
 
       <button
-        className={currenciesPannelIsOpen ? "currency-selector-btn open" : "currency-selector-btn"}
+        className={currenciesPannelIsOpen ? 'currency-selector-btn open' : 'currency-selector-btn'}
         onClick={() => handleOpenCurrenciesPannel()}
       >
         <img src={iconMenu} alt="Menu Icon" />
       </button>
 
-      <div className={currenciesPannelIsOpen ? "currency-selector open" : "currency-selector"}>
+      <div className={currenciesPannelIsOpen ? 'currency-selector open' : 'currency-selector'}>
         <div className="currency-scroll-zone">
           <div className="currency-search-input">
             <input
@@ -172,22 +171,27 @@ function Konverter() {
           </div>
           <ul className="currency-list">
             { filterSymbols().map((symbol: {code: any, description: string}) => (
-                  <li
-                    key={symbol.code}
-                    className="currency-item"
-                    onClick={() => handleCurrencySelect(symbol)}
-                  >
-                    <span className="currency-code">{symbol.code}</span>
-                    <span className="currency-description">{symbol.description}</span>
-                  </li>
-                )
-              )
-            }
+              // <li
+              //   key={symbol.code}
+              //   className="currency-item"
+              //   onClick={() => handleCurrencySelect(symbol)}
+              // >
+              //   <span className="currency-code">{symbol.code}</span>
+              //   <span className="currency-description">{symbol.description}</span>
+              // </li>
+              <Currency
+                key={symbol.code}
+                code={symbol.code}
+                description={symbol.description}
+                current={currency}
+                setCurrent={handleCurrencySelect}
+              />
+            ))}
           </ul>
         </div>
       </div>
 
-      <div className={keyboardIsOpen ? "keyboard open" : "keyboard"}>
+      <div className={keyboardIsOpen ? 'keyboard open' : 'keyboard'}>
         <button className="key number-key" onClick={() => handleKeyValue(7)}>7</button>
         <button className="key number-key" onClick={() => handleKeyValue(8)}>8</button>
         <button className="key number-key" onClick={() => handleKeyValue(9)}>9</button>
@@ -205,7 +209,7 @@ function Konverter() {
 
       { isLoading && (
         <div className="loading-screen">
-              <p>Loading...</p>
+          <p>Loading...</p>
         </div>
       )}
 

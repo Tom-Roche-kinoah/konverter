@@ -182,6 +182,13 @@ body {
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
+  transition: .2s ease-in-out;
+  border-left: solid 0px rgba(0,0,0,.1);
+}
+.currency-item.current {
+  border-left: solid 10px rgba(0,0,0,.1);
+  background-color: rgba(0,0,0,.1);
+  color: black;
 }
 .currency-item:first-child {
   border-top: solid 2px rgba(0,0,0,.3);

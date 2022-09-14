@@ -7,17 +7,30 @@ import currencies from '../../data/currencies';
 const axios = require('axios').default;
 
 function Konverter() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [currenciesPannelIsOpen, setCurrenciesPannelIsOpen] = useState(false);
   const [keyboardIsOpen, setKeyboardIsOpen] = useState(false);
   const [newInput, setNewInput] = useState(false);
+
+  const [currenciesSearchInput, setCurrenciesSearchInput] = useState('');
 
   const [rates, setRates] = useState([]);
   const [symbols, setSymbols] = useState([]);
   const [inputValue1, setInputValue1] = useState('1.00');
   const [rate, setRate] = useState(1.09);
   const [currency, setCurrency] = useState('United States Dollar');
+
+  const handleCurrenciesSearchInputChange = (e: any) => {
+    setCurrenciesSearchInput(e.target.value)
+  }
+
+  const filterSymbols = () => (
+    symbols.filter((symbol: any) => (
+        symbol.description.toLowerCase().includes(currenciesSearchInput.toLowerCase()) ||
+        symbol.code.toLowerCase().includes(currenciesSearchInput.toLowerCase())
+    ))
+  );
   
 
   const handleOpenKeyboard = () => {
@@ -36,6 +49,7 @@ function Konverter() {
     setRate(rates[symbols.code]);
   };
 
+  // API Fetch
   const fetchData = () => {
     setIsLoading(true);
     let symbols: string = 'https://api.exchangerate.host/symbols/';
@@ -151,11 +165,13 @@ function Konverter() {
           <div className="currency-search-input">
             <input
               type="search"
+              value={currenciesSearchInput}
+              onChange={(e) => handleCurrenciesSearchInputChange(e)}
               placeholder="Search for currencies..."
             />
           </div>
           <ul className="currency-list">
-            { symbols.map((symbol: {code: any, description: string}) => (
+            { filterSymbols().map((symbol: {code: any, description: string}) => (
                   <li
                     key={symbol.code}
                     className="currency-item"

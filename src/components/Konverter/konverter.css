@@ -57,7 +57,7 @@ body {
   border-radius: var(--radius-base);
   /* outline: solid 5px rgba(255,255,255,.2); */
   box-shadow: 
-    0 0 0 5px rgba(255,255,255,.2),
+    0 0 0 5px rgba(255,255,255,.4),
     0 0rem 1rem rgba(0,0,0,.4);
   position: relative;
   z-index: 50;
@@ -176,8 +176,12 @@ body {
 }
 .currency-item {
   cursor: pointer;
-  padding: 1rem;
+  padding: .5rem 1rem;
   border-bottom: solid 2px rgba(0,0,0,.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 .currency-item:first-child {
   border-top: solid 2px rgba(0,0,0,.3);
@@ -185,6 +189,15 @@ body {
 .currency-item:hover {
   background-color: rgba(0,0,0,.1);
 }
+.currency-code {
+
+}
+.currency-description {
+  font-size: .8rem;
+  font-weight: var(--fw-regular);
+}
+
+
 .currency-search-input {
   padding: 1rem;
   padding-top: .5rem;

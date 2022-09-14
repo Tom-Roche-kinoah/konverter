@@ -46,8 +46,8 @@ body {
 /* CURRENCY DISPLAY */
 .container {
   border-radius: var(--radius-base);
-  outline: solid 5px rgba(255,255,255,.2);
-  box-shadow: 0 1rem 1rem rgba(0,0,0,.1);
+  /* outline: solid 5px rgba(255,255,255,.2); */
+  box-shadow:  0 0 0 5px rgba(255,255,255,.2),0 1rem 1rem rgba(0,0,0,.4);
   position: relative;
   z-index: 50;
 }

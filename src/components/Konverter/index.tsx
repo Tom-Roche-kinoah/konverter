@@ -187,6 +187,12 @@ function Konverter() {
         <button className="key action-key return" onClick={() => setKeyboardIsOpen(false)}><img src={iconReturn} alt="Menu Icon" /></button>
       </div>
 
+      { isLoading && (
+        <div className="loading-screen">
+              <p>Loading...</p>
+        </div>
+      )}
+
     </div>
   );
 }

@@ -4,12 +4,21 @@
   --color-medium2: #929292;
   --color-dark: #313131;
   --color-main: #99CC00;
-  --radius-base: 10px;
   --fw-thin: 100;
   --fw-regular: 400;
   --fw-bold: 700;
   --fw-black: 900;
-  --currency-selector-height: 18rem;
+  --radius-base: 10px;
+  --margin-base: 20px;
+  --currency-bloc-height: 100px;
+  --currency-selector-height: 300px;
+}
+
+@media screen and (max-height: 580px) {
+  :root {
+    --currency-bloc-height: 90px;
+    --currency-selector-height: 250px;
+  }
 }
 
 *,
@@ -39,7 +48,7 @@ body {
   margin: 0 auto;
   max-width: 600px;
   background: linear-gradient(var(--color-medium) 0%, #111 100%);
-  padding: 1rem;
+  padding: var(--margin-base);
   overflow: hidden;
 }
 
@@ -47,20 +56,20 @@ body {
 .container {
   border-radius: var(--radius-base);
   /* outline: solid 5px rgba(255,255,255,.2); */
-  box-shadow:  0 0 0 5px rgba(255,255,255,.2),0 1rem 1rem rgba(0,0,0,.4);
+  box-shadow: 
+    0 0 0 5px rgba(255,255,255,.2),
+    0 0rem 1rem rgba(0,0,0,.4);
   position: relative;
   z-index: 50;
 }
 .currency {
-  padding: 2rem 0;
-  text-align: center;
+  height: var(--currency-bloc-height);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-@media screen and (max-height: 580px) {
-  .currency {
-    padding: 1rem 0;
-    text-align: center;
-  }
-}
+
 .currency-1 {
   position: relative;
   background-color: var(--color-dark);
@@ -102,11 +111,12 @@ body {
 
 /* CURRENCY SELECTOR */
 .currency-selector-btn {
-  --btn-size: 2.5rem;
+  --btn-size: 40px;
   position: absolute;
   z-index: 100;
   left: calc(50% - calc(var(--btn-size) * .5));
-  top: 15.7rem;
+  /* top: 15.7rem; */
+  top: calc(var(--currency-bloc-height) * 2 + 15px);
   background-color: var(--color-main);
   width: var(--btn-size);
   height: var(--btn-size);
@@ -114,11 +124,13 @@ body {
   justify-content: center;
   align-items: center;
   border-radius: 10rem;
-  transition: top .3s .3s ease-in-out, transform .3s ease;
+  transition: top .3s 0s ease-in-out, transform .3s ease;
 }
 .currency-selector-btn.open {
   transform: rotate(90deg);
-  top: calc(15.7rem + var(--currency-selector-height));
+  /* top: calc(15.7rem + var(--currency-selector-height)); */
+  top: calc(var(--currency-bloc-height) * 2 + 15px + var(--currency-selector-height));
+  transition: top .3s .3s ease-in-out, transform .3s ease;
 }
 .currency-selector {
   color: var(--color-dark);
@@ -135,7 +147,7 @@ body {
   box-shadow: 0 0 1rem rgba(0,0,0,.2);
 }
 .currency-scroll-zone {
-  transition: height .3s .3s ease-in-out;
+  transition: height .3s 0s ease-in-out;
   height: 0;
   overflow-y: auto;
 }
@@ -155,6 +167,7 @@ body {
 	background-color: var(--color-light);
 }
 .currency-selector.open .currency-scroll-zone {
+  transition: height .3s .3s ease-in-out;
   height: var(--currency-selector-height);
 }
 .currency-list {
@@ -164,10 +177,10 @@ body {
 .currency-item {
   cursor: pointer;
   padding: 1rem;
-  border-bottom: solid 2px var(--color-dark);
+  border-bottom: solid 2px rgba(0,0,0,.3);
 }
 .currency-item:first-child {
-  border-top: solid 2px var(--color-dark);
+  border-top: solid 2px rgba(0,0,0,.3);
 }
 .currency-item:hover {
   background-color: rgba(0,0,0,.1);
@@ -214,7 +227,7 @@ body {
   transition: bottom .3s ease-in-out;
 }
 .keyboard.open {
-  bottom: 1rem;
+  bottom: 2rem;
 }
 .keyboard .key {
   background-color: var(--color-dark);
@@ -225,10 +238,14 @@ body {
   font-size: 1.5rem;
   transition: .5s ease-in-out;
   text-align: left;
+  box-shadow: 0 2px 0px 0px rgba(0,0,0,.6);
+  translate: 0 0;
 }
 .keyboard .key:active {
   transition: 0s ease-in-out;
   background-color: var(--color-main);
+  box-shadow: 0 1px 0px 0px rgba(0,0,0,.6);
+  translate: 0 1px;
 }
 .keyboard .number-key {
 

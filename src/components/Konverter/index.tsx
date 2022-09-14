@@ -10,36 +10,54 @@ function Konverter() {
   const [inputValue1, setInputValue1] = useState('1.00');
   const [newInput, setNewInput] = useState(false);
 
+  /**
+   * Open our own virtual digit keyboard
+   */
   const handleOpenKeyboard = () => {
     setKeyboardIsOpen(true);
     setNewInput(true);
     setCurrenciesPannelIsOpen(false);
-  }
+  };
 
   const handleOpenCurrenciesPannel = () => {
     setCurrenciesPannelIsOpen(!currenciesPannelIsOpen);
     setKeyboardIsOpen(false);
-  }
+  };
 
+  /**
+   * Keyboard logic
+   * @param {number|'c'|'.'} value - a digit (0 to 9), a 'c' (clean input) or a ',' (coma).
+   */
   const handleKeyValue = (value: number|'c'|'.') => {
     // if 'c' => set value to 0 then exit
     if (value === 'c') {
       setInputValue1('0');
       return;
     }
-    // if ',' => check if its not already in string
-    if (value === '.' && inputValue1.includes('.')) {
-      return;
-    }
-    // if 0 => replace it
-    if (inputValue1 === '0') {
-      setInputValue1('' + value);
+    // if new opening and '.' => replace current value for '0.'
+    if (newInput && value === '.') {
+      setInputValue1('0.');
+      setNewInput(false);
       return;
     }
     // if new opening => replace current value
     if (newInput) {
       setInputValue1('' + value);
       setNewInput(false);
+      return;
+    }
+    // if ',' => check if its not already in string
+    if (value === '.' && inputValue1.includes('.')) {
+      return;
+    }
+    // if ',' => check if there are digital before (the fisrt char shouldnt be ,)
+    if (value === '.' && inputValue1.charAt(0) === '0') {
+      setInputValue1('0' + value)
+      return;
+    }
+    // if 0 => replace it
+    if (inputValue1 === '0') {
+      setInputValue1('' + value);
       return;
     }
     // if string < 11 characters => concat

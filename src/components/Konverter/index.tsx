@@ -1,18 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import iconMenu from '../../assets/img/icon-menu.svg';
 import iconReturn from '../../assets/img/icon-return.svg';
 import './konverter.css';
+import currencies from '../../data/currencies';
 
+const axios = require('axios').default;
 
 function Konverter() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const [currenciesPannelIsOpen, setCurrenciesPannelIsOpen] = useState(false);
   const [keyboardIsOpen, setKeyboardIsOpen] = useState(false);
-  const [inputValue1, setInputValue1] = useState('1.00');
   const [newInput, setNewInput] = useState(false);
 
-  /**
-   * Open our own virtual digit keyboard
-   */
+  const [rates, setRates] = useState([]);
+  const [symbols, setSymbols] = useState([]);
+  const [inputValue1, setInputValue1] = useState('1.00');
+  const [rate, setRate] = useState(1.09);
+  const [currency, setCurrency] = useState('United States Dollar');
+  
+
   const handleOpenKeyboard = () => {
     setKeyboardIsOpen(true);
     setNewInput(true);
@@ -24,13 +31,49 @@ function Konverter() {
     setKeyboardIsOpen(false);
   };
 
+  const handleCurrencySelect = (symbols: {description: any, code: any}) => {
+    setCurrency(symbols.description);
+    setRate(rates[symbols.code]);
+  };
+
+  const fetchData = () => {
+    setIsLoading(true);
+    let symbols: string = 'https://api.exchangerate.host/symbols/';
+    let rates: string = 'https://api.exchangerate.host/latest';
+    const requestsymbols = axios.get(symbols);
+    const requestrates = axios.get(rates);
+
+    axios.all([requestsymbols, requestrates]).then(axios.spread((...responses: any[]) => {
+      const responseSymbols = responses[0];   
+      const responseRates = responses[1];   
+      setSymbols(Object.values(responseSymbols.data.symbols));
+      setRates(responseRates.data.rates);   
+    }))
+    .catch((error: any) => {
+      throw new Error(error.message);
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
+  };
+
+  useEffect(() => {
+    fetchData();
+  },[]);
+
+
   /**
    * Keyboard logic
-   * @param {number|'c'|'.'} value - a digit (0 to 9), a 'c' (clean input) or a ',' (coma).
+   * @param {number|'c'|'.'} value - a digit (0 to 9), a 'c' (clean input), ',' (coma), Enter & Backspace.
    */
-  const handleKeyValue = (value: number|'c'|'.') => {
+  const handleKeyValue = (value: number|'c'|'.'|'Enter'|'Backspace') => {
+    // if 'Enter' => Close keyboard
+    if (value === 'Enter') {
+      setKeyboardIsOpen(false);
+      return;
+    }
     // if 'c' => set value to 0 then exit
-    if (value === 'c') {
+    if (value === 'c' || value === 'Backspace') {
       setInputValue1('0');
       return;
     }
@@ -66,6 +109,22 @@ function Konverter() {
     }
   };
 
+  useEffect(() => {
+    function handleGetKey(e: any) {
+      let key: any = e.key;
+      if (keyboardIsOpen) {
+        if ( ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'c', '.', 'Enter', 'Backspace'].includes(key)) {
+          handleKeyValue(key);
+          console.log(key);
+        }
+      }
+    }
+    document.addEventListener('keydown', handleGetKey);
+    return function cleanup() {
+      document.removeEventListener('keydown', handleGetKey);
+    }
+  });
+
   return (
     <div className="konverter">
 
@@ -75,8 +134,8 @@ function Konverter() {
           <div className="currency-name">Euro</div>
         </div>
         <div className="currency currency-2">
-          <div className="currency-value">{(Number(inputValue1) * 1.09).toFixed(2)}</div>
-          <div className="currency-name">United States Dollar</div>
+          <div className="currency-value">{(Number(inputValue1) * rate).toFixed(2)}</div>
+          <div className="currency-name">{currency}</div>
         </div>
       </div>
 
@@ -96,38 +155,18 @@ function Konverter() {
             />
           </div>
           <ul className="currency-list">
-            <li className="currency-item">Australian Dollar</li>
-            <li className="currency-item">Brazilian Real</li>
-            <li className="currency-item">British Pound</li>
-            <li className="currency-item">Bulgarian Lev</li>
-            <li className="currency-item">Canadian Dollar</li>
-            <li className="currency-item">Chinese Renminbi Yuan</li>
-            <li className="currency-item">Croatian Kuna</li>
-            <li className="currency-item">Czech Koruna</li>
-            <li className="currency-item">Danish Krone</li>
-            <li className="currency-item">Hong Kong Dollar</li>
-            <li className="currency-item">Hungarian Forint</li>
-            <li className="currency-item">Icelandic Króna</li>
-            <li className="currency-item">Indian Rupee</li>
-            <li className="currency-item">Indonesian Rupiah</li>
-            <li className="currency-item">Israeli New Sheqel</li>
-            <li className="currency-item">Japanese Yen</li>
-            <li className="currency-item">Malaysian Ringgit</li>
-            <li className="currency-item">Mexican Peso</li>
-            <li className="currency-item">New Zealand Dollar</li>
-            <li className="currency-item">Norwegian Krone</li>
-            <li className="currency-item">Philippine Peso</li>
-            <li className="currency-item">Polish Złoty</li>
-            <li className="currency-item">Romanian Leu</li>
-            <li className="currency-item">Russian Ruble</li>
-            <li className="currency-item">Singapore Dollar</li>
-            <li className="currency-item">South African Rand</li>
-            <li className="currency-item">South Korean Won</li>
-            <li className="currency-item">Swedish Krona</li>
-            <li className="currency-item">Swiss Franc</li>
-            <li className="currency-item">Thai Baht</li>
-            <li className="currency-item">Turkish Lira</li>
-            <li className="currency-item">United States Dollar</li>
+            { symbols.map((symbol: {code: any, description: string}) => (
+                  <li
+                    key={symbol.code}
+                    className="currency-item"
+                    onClick={() => handleCurrencySelect(symbol)}
+                  >
+                    <span className="currency-code">{symbol.code}</span>
+                    <span className="currency-description">{symbol.description}</span>
+                  </li>
+                )
+              )
+            }
           </ul>
         </div>
       </div>

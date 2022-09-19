@@ -4,4 +4,4 @@
 ## Stack
 - JS/TS
 - React.js
-- Redux
+- Axios
